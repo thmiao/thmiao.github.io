@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>golang on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</title>
+    <link>https://thmiao.github.io/tags/golang/</link>
+    <description>Recent content in golang on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 22 Dec 2021 09:12:33 +0800</lastBuildDate><atom:link href="https://thmiao.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于go-redis与KeepTTL</title>
+      <link>https://thmiao.github.io/posts/keepttl/</link>
+      <pubDate>Wed, 22 Dec 2021 09:12:33 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/keepttl/</guid>
+      <description>
+        
+          &lt;p&gt;​		Redis在6.0版本之后增加了SET命令的KEEPTTL选项保留该键的生存时间，但是go-redis只在注释里备注了，没有做校验或向下兼容，如果对应的redis服务器版本小于6.0直接使用-1作为失效时间则会直接收到错误。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Set Redis `SET key value [expiration]` command.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Use expiration for `SETEX`-like behavior.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Zero expiration means the key has no expiration time.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// KeepTTL is a Redis KEEPTTL option to keep existing TTL, it requires your redis-server version &amp;gt;= 6.0,
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// otherwise you will receive an error: (error) ERR syntax error.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cmdable&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;Set&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;context&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Context&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;key&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt;{}, &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;time&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Duration&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;StatusCmd&lt;/span&gt; {
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; make([]&lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt;{}, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;] = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;set&amp;#34;&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;] = &lt;span style=&#34;color:#a6e22e&#34;&gt;key&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;] = &lt;span style=&#34;color:#a6e22e&#34;&gt;value&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt; &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; {
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;usePrecise&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt;) {
+			&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; = append(&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;px&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;formatMs&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt;))
+		} &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; {
+			&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; = append(&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ex&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;formatSec&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt;))
+		}
+	} &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;KeepTTL&lt;/span&gt; {
+		&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; = append(&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keepttl&amp;#34;&lt;/span&gt;)
+	}
+
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;cmd&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;NewStatusCmd&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;)
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;cmd&lt;/span&gt;)
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cmd&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果要用这个功能建议还是进行升级，或者在使用go-redis前计算剩余时间作为ttl&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>关于protocol buffer命名冲突与解决</title>
+      <link>https://thmiao.github.io/posts/protobuf_issue/</link>
+      <pubDate>Fri, 26 Nov 2021 10:55:54 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/protobuf_issue/</guid>
+      <description>
+        
+          &lt;p&gt;  使用google.golang.org/protobuf或者github.com/golang/protobuf的时候经常能看到file &amp;ldquo;xx.proto&amp;rdquo; is already registered的Warning，甚至在一些版本下直接报Error。&lt;/p&gt;
+&lt;p&gt;  这是因为所有链接到Go二进制文件的协议缓冲区声明都被插入到全局注册表中。每个protobuf声明(例如，enum, enum值，或者消息)都有一个绝对名称，它是包名和.proto源文件中声明的相对名称的连接(例如，my.proto.package.MyMessage.NestedMessage)。protobuf语言假设所有声明都是唯一的。如果链接到Go二进制文件中的两个protobuf声明具有相同的名称，那么这将导致名称空间冲突，注册中心不可能根据名称正确解析该声明。根据所使用的Go protobufs版本的不同，这可能会在初始时产生恐慌，也可能会悄无声息地消除冲突，并在稍后的运行时导致潜在的bug。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/protobuf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;  如果你使用的版本是报Error而带来了困扰，并且暂时不想通过更改命名的方式来解决，官方文档中提供了两种解决方案。一个是在编译时将命名冲突报错的策略调整为Warning，另一个是通过环境变量在执行时调整为Warning。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/protobuf_git.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;  当然也可以使用较旧的版本，比如google.golang.org/protobuf v1.26.0之前的版本或者是github.com/golang/protobuf v1.5.0之前的版本。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</title>
+    <link>https://thmiao.github.io/tags/hugo/</link>
+    <description>Recent content in Hugo on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 24 Nov 2021 16:00:30 +0800</lastBuildDate><atom:link href="https://thmiao.github.io/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>利用hugo和GitHub Pages搭建一个易用的个人博客</title>
+      <link>https://thmiao.github.io/posts/first_post/</link>
+      <pubDate>Wed, 24 Nov 2021 16:00:30 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/first_post/</guid>
+      <description>
+        
+          &lt;p&gt;  之前有断断续续在CSDN等平台上写过一些文章，整体上还是比较方便的但是利用平台的缺点包括但不限于&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文章页面上可能带有广告，降低了页面整体的清洁度和观感&lt;/li&gt;
+&lt;li&gt;页面编辑的自由度低，没法DIY一些有意思的东西&lt;/li&gt;
+&lt;li&gt;迁移性差&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;  但是如果只是为了搭一个简单的博客去租云服务器的话又感觉不划算，那不如试试利用GitHub Pages免费托管静态页面来搭建一个简单的博客。GitHub Pages的使用非常友好，只需要像平常一样创建一个repository，唯一的要求是这个仓库需要命名为username.github.io（username对应你的github用户名或者组织名）。然后就可以在仓库的Setting&amp;ndash;Pages下管理你的GitHub Pages，接下来将网页所需要的css、js、html等资源上传到这个仓库即可。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;官方快速开始教程 &lt;a href=&#34;https://pages.github.com/&#34;&gt;https://pages.github.com/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;当然这项免费的服务也有一定的限制&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Published GitHub Pages sites may be no larger than 1 GB.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GitHub Pages sites have a soft bandwidth limit of 100GB per month.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GitHub Pages sites have a soft limit of 10 builds per hour.&lt;/p&gt;
+&lt;p&gt;项目大小最大为1GB，每月带宽使用不超过100GB，每小时最多构建10个版本。这个限制对于普通的个人博客而言已经绰绰有余了，可以放心使用&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/mypage.png&#34; alt=&#34;mypage&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;上图为本博客的GitHub Pages供参考，项目地址 &lt;a href=&#34;https://github.com/thmiao/thmiao.github.io&#34;&gt;https://github.com/thmiao/thmiao.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;  有了页面托管的地址就可以开始着手做静态页面了，比起从头开始，选择静态页面的生成框架会更加方便。主流的生成器有jekyll、hugo、hexo、gatsby等。在下作为一个gopher，选用的是golang编写的开源框架hugo作为本站的生成器。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;hugo官网 &lt;a href=&#34;https://gohugo.io/&#34;&gt;https://gohugo.io/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;hugo项目 &lt;a href=&#34;https://github.com/gohugoio/hugo&#34;&gt;https://github.com/gohugoio/hugo&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;  hugo的安装和使用在hugo官网的quick start已经介绍的非常清楚并且配了动图，本文就不再做赘述和搬运了。利用hugo生成对应的静态页面后，去github仓库的sSetting&amp;ndash;Pages下将Sources设置为指定分支的对应根目录，然后push上去就ok了。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>

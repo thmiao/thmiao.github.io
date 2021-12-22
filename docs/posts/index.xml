@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</title>
+    <link>https://thmiao.github.io/posts/</link>
+    <description>Recent content in Posts on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 22 Dec 2021 09:12:33 +0800</lastBuildDate><atom:link href="https://thmiao.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于go-redis与KeepTTL</title>
+      <link>https://thmiao.github.io/posts/keepttl/</link>
+      <pubDate>Wed, 22 Dec 2021 09:12:33 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/keepttl/</guid>
+      <description>
+        
+          &lt;p&gt;​		Redis在6.0版本之后增加了SET命令的KEEPTTL选项保留该键的生存时间，但是go-redis只在注释里备注了，没有做校验或向下兼容，如果对应的redis服务器版本小于6.0直接使用-1作为失效时间则会直接收到错误。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Set Redis `SET key value [expiration]` command.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Use expiration for `SETEX`-like behavior.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Zero expiration means the key has no expiration time.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// KeepTTL is a Redis KEEPTTL option to keep existing TTL, it requires your redis-server version &amp;gt;= 6.0,
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// otherwise you will receive an error: (error) ERR syntax error.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cmdable&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;Set&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;context&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Context&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;key&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt;{}, &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;time&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Duration&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;StatusCmd&lt;/span&gt; {
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; make([]&lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt;{}, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;] = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;set&amp;#34;&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;] = &lt;span style=&#34;color:#a6e22e&#34;&gt;key&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;] = &lt;span style=&#34;color:#a6e22e&#34;&gt;value&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt; &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; {
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;usePrecise&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt;) {
+			&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; = append(&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;px&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;formatMs&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt;))
+		} &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; {
+			&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; = append(&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ex&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;formatSec&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt;))
+		}
+	} &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;expiration&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;KeepTTL&lt;/span&gt; {
+		&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt; = append(&lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;keepttl&amp;#34;&lt;/span&gt;)
+	}
+
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;cmd&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;NewStatusCmd&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;args&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;)
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;ctx&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;cmd&lt;/span&gt;)
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cmd&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果要用这个功能建议还是进行升级，或者在使用go-redis前计算剩余时间作为ttl&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>解决MongoDB Compass报Current topology does not support sessions</title>
+      <link>https://thmiao.github.io/posts/mongo_session/</link>
+      <pubDate>Tue, 07 Dec 2021 17:50:07 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/mongo_session/</guid>
+      <description>
+        
+          &lt;p&gt;​		用MongoDB Compass的时候下意识点了更新从1.8.4更新到了1.9.5，然后就没法访问文档了，报&lt;code&gt;Current topology does not support sessions&lt;/code&gt;的错误。各种地方寻找解决方案没有找到解决，但猜测是Server使用的MongoDB版本是3.4.24低于支持transactions的4.0版本导致的兼容问题。因为没法对使用的MongoDB进行升级，暂时采取了对MongoDB Compass版本进行回退，回退后可正常使用。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>关于protocol buffer命名冲突与解决</title>
+      <link>https://thmiao.github.io/posts/protobuf_issue/</link>
+      <pubDate>Fri, 26 Nov 2021 10:55:54 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/protobuf_issue/</guid>
+      <description>
+        
+          &lt;p&gt;  使用google.golang.org/protobuf或者github.com/golang/protobuf的时候经常能看到file &amp;ldquo;xx.proto&amp;rdquo; is already registered的Warning，甚至在一些版本下直接报Error。&lt;/p&gt;
+&lt;p&gt;  这是因为所有链接到Go二进制文件的协议缓冲区声明都被插入到全局注册表中。每个protobuf声明(例如，enum, enum值，或者消息)都有一个绝对名称，它是包名和.proto源文件中声明的相对名称的连接(例如，my.proto.package.MyMessage.NestedMessage)。protobuf语言假设所有声明都是唯一的。如果链接到Go二进制文件中的两个protobuf声明具有相同的名称，那么这将导致名称空间冲突，注册中心不可能根据名称正确解析该声明。根据所使用的Go protobufs版本的不同，这可能会在初始时产生恐慌，也可能会悄无声息地消除冲突，并在稍后的运行时导致潜在的bug。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/protobuf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;  如果你使用的版本是报Error而带来了困扰，并且暂时不想通过更改命名的方式来解决，官方文档中提供了两种解决方案。一个是在编译时将命名冲突报错的策略调整为Warning，另一个是通过环境变量在执行时调整为Warning。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/protobuf_git.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;  当然也可以使用较旧的版本，比如google.golang.org/protobuf v1.26.0之前的版本或者是github.com/golang/protobuf v1.5.0之前的版本。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>利用hugo和GitHub Pages搭建一个易用的个人博客</title>
+      <link>https://thmiao.github.io/posts/first_post/</link>
+      <pubDate>Wed, 24 Nov 2021 16:00:30 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/first_post/</guid>
+      <description>
+        
+          &lt;p&gt;  之前有断断续续在CSDN等平台上写过一些文章，整体上还是比较方便的但是利用平台的缺点包括但不限于&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文章页面上可能带有广告，降低了页面整体的清洁度和观感&lt;/li&gt;
+&lt;li&gt;页面编辑的自由度低，没法DIY一些有意思的东西&lt;/li&gt;
+&lt;li&gt;迁移性差&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;  但是如果只是为了搭一个简单的博客去租云服务器的话又感觉不划算，那不如试试利用GitHub Pages免费托管静态页面来搭建一个简单的博客。GitHub Pages的使用非常友好，只需要像平常一样创建一个repository，唯一的要求是这个仓库需要命名为username.github.io（username对应你的github用户名或者组织名）。然后就可以在仓库的Setting&amp;ndash;Pages下管理你的GitHub Pages，接下来将网页所需要的css、js、html等资源上传到这个仓库即可。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;官方快速开始教程 &lt;a href=&#34;https://pages.github.com/&#34;&gt;https://pages.github.com/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;当然这项免费的服务也有一定的限制&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Published GitHub Pages sites may be no larger than 1 GB.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GitHub Pages sites have a soft bandwidth limit of 100GB per month.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GitHub Pages sites have a soft limit of 10 builds per hour.&lt;/p&gt;
+&lt;p&gt;项目大小最大为1GB，每月带宽使用不超过100GB，每小时最多构建10个版本。这个限制对于普通的个人博客而言已经绰绰有余了，可以放心使用&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/mypage.png&#34; alt=&#34;mypage&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;上图为本博客的GitHub Pages供参考，项目地址 &lt;a href=&#34;https://github.com/thmiao/thmiao.github.io&#34;&gt;https://github.com/thmiao/thmiao.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;  有了页面托管的地址就可以开始着手做静态页面了，比起从头开始，选择静态页面的生成框架会更加方便。主流的生成器有jekyll、hugo、hexo、gatsby等。在下作为一个gopher，选用的是golang编写的开源框架hugo作为本站的生成器。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;hugo官网 &lt;a href=&#34;https://gohugo.io/&#34;&gt;https://gohugo.io/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;hugo项目 &lt;a href=&#34;https://github.com/gohugoio/hugo&#34;&gt;https://github.com/gohugoio/hugo&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;  hugo的安装和使用在hugo官网的quick start已经介绍的非常清楚并且配了动图，本文就不再做赘述和搬运了。利用hugo生成对应的静态页面后，去github仓库的sSetting&amp;ndash;Pages下将Sources设置为指定分支的对应根目录，然后push上去就ok了。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
