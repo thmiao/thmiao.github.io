@@ -6,7 +6,33 @@
     <description>Recent content on Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Dec 2021 09:12:33 +0800</lastBuildDate><atom:link href="https://thmiao.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 27 Dec 2021 15:20:21 +0800</lastBuildDate><atom:link href="https://thmiao.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于go image.Decode与import _</title>
+      <link>https://thmiao.github.io/posts/image_decode/</link>
+      <pubDate>Mon, 27 Dec 2021 15:20:21 +0800</pubDate>
+      
+      <guid>https://thmiao.github.io/posts/image_decode/</guid>
+      <description>
+        
+          &lt;p&gt;​		最近在尝试go的image包时执行以下代码遇到了&lt;em&gt;go image: unknown format&lt;/em&gt;的错误，其原因是缺少了image包相关的init导致Decode函数不知道怎么解码对应格式的文件。解决方法：用import _ &amp;ldquo;image/png&amp;rdquo;，执行该包的init()而不真的导入该包（避免报unused package问题），之后Decode函数可正常执行&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//go:embed gopher.png
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Gopher_png&lt;/span&gt; []&lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;
+
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;init&lt;/span&gt;() {
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;img&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;err&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;image&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Decode&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;bytes&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;NewReader&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;gopher&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Gopher_png&lt;/span&gt;))
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;err&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt; {
+		&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Fatal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;err&lt;/span&gt;)
+	}
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;gopherInstance&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;gopherImage&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;ebiten&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;NewImageFromImage&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;img&lt;/span&gt;)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;​		另外一提embed特性确实好用&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
     <item>
       <title>关于go-redis与KeepTTL</title>
       <link>https://thmiao.github.io/posts/keepttl/</link>

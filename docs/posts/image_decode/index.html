@@ -1,31 +1,29 @@
 
 <!DOCTYPE html>
-<html lang="en" data-figures="" class="home">
+<html lang="en" data-figures="" class="page">
   <head>
-	<meta name="generator" content="Hugo 0.83.1" />
-<title>Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</title>
+<title>关于go image.Decode与import _ | Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 <meta property="og:locale" content="en" />
 
-<meta property="og:type" content="website">
-<meta name="description" content="">
+<meta property="og:type" content="article">
+<meta name="description" content="​	最近在尝试go的image包时执行以下代码遇到了go image: unknown format的错误，其原因是缺少了image包相关的init导致Decode函数不知道怎么解码对应格式的文件。解决方法：用import _ &ldquo;image/png&rdquo;，执行该包的init()而不真的导入该包（避免 …">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="">
-<meta name="twitter:title" content="Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ" />
-<meta property="og:url" content="https://thmiao.github.io/" />
-<meta property="og:title" content="Myuu&#39;s blog | 谬喵的博客 | ミュウのブログ" />
-<meta property="og:description" content="" />
+<meta name="twitter:title" content="关于go image.Decode与import _" />
+<meta property="og:url" content="https://thmiao.github.io/posts/image_decode/" />
+<meta property="og:title" content="关于go image.Decode与import _" />
+<meta property="og:description" content="​	最近在尝试go的image包时执行以下代码遇到了go image: unknown format的错误，其原因是缺少了image包相关的init导致Decode函数不知道怎么解码对应格式的文件。解决方法：用import _ &ldquo;image/png&rdquo;，执行该包的init()而不真的导入该包（避免 …" />
 <meta property="og:image" content="https://thmiao.github.io/" />
 
 <link rel="apple-touch-icon" sizes="180x180" href="https://thmiao.github.io/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://thmiao.github.io/icons/favicon-32x32.png">
 <link rel="manifest" href="https://thmiao.github.io/icons/site.webmanifest">
 
-<link rel="canonical" href="https://thmiao.github.io/">
-<link rel="alternate" type="application/rss+xml" href="https://thmiao.github.io/index.xml" title="Myuu's blog | 谬喵的博客 | ミュウのブログ" />
+<link rel="canonical" href="https://thmiao.github.io/posts/image_decode/">
 
     
 
@@ -75,18 +73,10 @@
 </header>
 
     <main>
-
   
-
 <div class="grid-inverse wrap content">
-  <ul class="posts" id="posts">
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://thmiao.github.io/posts/image_decode/" title="关于go image.Decode与import _">关于go image.Decode与import _</a>
-      </h3>
-      
+  <article class="post_content">
+    <h1 class="post_title">关于go image.Decode与import _</h1>
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
@@ -123,268 +113,51 @@
   </span>
   </div>
 
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-              ​	最近在尝试go的image包时执行以下代码遇到了go image: unknown format的错误，其原因是缺少了image包相关的init导致Decode函数不知道怎么解码对应格式的文件。解决方法：用import _ &ldquo;image/png&rdquo;，执行该包的init()而不真的导入该包（避免报unused package问题），之后Decode函数可正常执行
-//go:embed gopher.png var Gopher_png []byte func init() { img, _, err := image.Decode(bytes.NewReader(gopher.Gopher_png)) if …
-            
-          </p>
-          <a href="https://thmiao.github.io/posts/image_decode/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
+    
+    <p>​		最近在尝试go的image包时执行以下代码遇到了<em>go image: unknown format</em>的错误，其原因是缺少了image包相关的init导致Decode函数不知道怎么解码对应格式的文件。解决方法：用import _ &ldquo;image/png&rdquo;，执行该包的init()而不真的导入该包（避免报unused package问题），之后Decode函数可正常执行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//go:embed gopher.png
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">Gopher_png</span> []<span style="color:#66d9ef">byte</span>
 
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://thmiao.github.io/posts/keepttl/" title="关于go-redis与KeepTTL">关于go-redis与KeepTTL</a>
-      </h3>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>() {
+	<span style="color:#a6e22e">img</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">gopher</span>.<span style="color:#a6e22e">Gopher_png</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">gopherInstance</span>.<span style="color:#a6e22e">gopherImage</span> = <span style="color:#a6e22e">ebiten</span>.<span style="color:#a6e22e">NewImageFromImage</span>(<span style="color:#a6e22e">img</span>)
+}
+</code></pre></div><p>​		另外一提embed特性确实好用</p>
+
+
       
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Dec 22, 2021</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://thmiao.github.io/tags/golang' title="golang" class="post_tag button button_translucent">golang
-        </a><a href='https://thmiao.github.io/tags/redis' title="redis" class="post_tag button button_translucent">redis
-        </a>
-    </span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=%e5%85%b3%e4%ba%8ego-redis%e4%b8%8eKeepTTL&url=https%3a%2f%2fthmiao.github.io%2fposts%2fkeepttl%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fthmiao.github.io%2fposts%2fkeepttl%2f&t=%e5%85%b3%e4%ba%8ego-redis%e4%b8%8eKeepTTL" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://thmiao.github.io/posts/keepttl/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-              ​	Redis在6.0版本之后增加了SET命令的KEEPTTL选项保留该键的生存时间，但是go-redis只在注释里备注了，没有做校验或向下兼容，如果对应的redis服务器版本小于6.0直接使用-1作为失效时间则会直接收到错误。
-// Set Redis `SET key value [expiration]` command. // Use expiration for `SETEX`-like behavior. // // Zero expiration means the key has no expiration time. // KeepTTL is a Redis KEEPTTL option to keep …
-            
-          </p>
-          <a href="https://thmiao.github.io/posts/keepttl/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://thmiao.github.io/posts/mongo_session/" title="解决MongoDB Compass报Current topology does not support sessions">解决MongoDB Compass报Current topology does not support sessions</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Dec 7, 2021</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://thmiao.github.io/tags/node.js' title="node.js" class="post_tag button button_translucent">node.js
-        </a><a href='https://thmiao.github.io/tags/mongodb' title="MongoDB" class="post_tag button button_translucent">MongoDB
-        </a>
-    </span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=%e8%a7%a3%e5%86%b3MongoDB%20Compass%e6%8a%a5Current%20topology%20does%20not%20support%20sessions&url=https%3a%2f%2fthmiao.github.io%2fposts%2fmongo_session%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fthmiao.github.io%2fposts%2fmongo_session%2f&t=%e8%a7%a3%e5%86%b3MongoDB%20Compass%e6%8a%a5Current%20topology%20does%20not%20support%20sessions" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://thmiao.github.io/posts/mongo_session/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-              ​	用MongoDB Compass的时候下意识点了更新从1.8.4更新到了1.9.5，然后就没法访问文档了，报Current topology does not support sessions的错误。各种地方寻找解决方案没有找到解决，但猜测是Server使用的MongoDB版本是3.4.24低于支持transactions的4.0版本导致的兼容问题。因为没法对使用的MongoDB进行升级，暂时采取了对MongoDB Compass版本进行回退，回退后可正常使用。
-            
-          </p>
-          <a href="https://thmiao.github.io/posts/mongo_session/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://thmiao.github.io/posts/protobuf_issue/" title="关于protocol buffer命名冲突与解决">关于protocol buffer命名冲突与解决</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Nov 26, 2021</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://thmiao.github.io/tags/protobuf' title="protobuf" class="post_tag button button_translucent">protobuf
-        </a><a href='https://thmiao.github.io/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
-        </a>
-    </span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=%e5%85%b3%e4%ba%8eprotocol%20buffer%e5%91%bd%e5%90%8d%e5%86%b2%e7%aa%81%e4%b8%8e%e8%a7%a3%e5%86%b3&url=https%3a%2f%2fthmiao.github.io%2fposts%2fprotobuf_issue%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fthmiao.github.io%2fposts%2fprotobuf_issue%2f&t=%e5%85%b3%e4%ba%8eprotocol%20buffer%e5%91%bd%e5%90%8d%e5%86%b2%e7%aa%81%e4%b8%8e%e8%a7%a3%e5%86%b3" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://thmiao.github.io/posts/protobuf_issue/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-              使用google.golang.org/protobuf或者github.com/golang/protobuf的时候经常能看到file &ldquo;xx.proto&rdquo; is already registered的Warning，甚至在一些版本下直接报Error。
- 这是因为所有链接到Go二进制文件的协议缓冲区声明都被插入到全局注册表中。每个protobuf声明(例如，enum, enum值，或者消息)都有一个绝对名称，它是包名和.proto源文件中声明的相对名称的连接(例如，my.proto.package.MyMessage.NestedMessage)。protobuf语言假设所有声明都是唯一的。如果链接到Go二 …
-            
-          </p>
-          <a href="https://thmiao.github.io/posts/protobuf_issue/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://thmiao.github.io/posts/first_post/" title="利用hugo和GitHub Pages搭建一个易用的个人博客">利用hugo和GitHub Pages搭建一个易用的个人博客</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Nov 24, 2021</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://thmiao.github.io/tags/hugo' title="Hugo" class="post_tag button button_translucent">Hugo
-        </a><a href='https://thmiao.github.io/tags/github-pages' title="GitHub Pages" class="post_tag button button_translucent">GitHub Pages
-        </a>
-    </span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=%e5%88%a9%e7%94%a8hugo%e5%92%8cGitHub%20Pages%e6%90%ad%e5%bb%ba%e4%b8%80%e4%b8%aa%e6%98%93%e7%94%a8%e7%9a%84%e4%b8%aa%e4%ba%ba%e5%8d%9a%e5%ae%a2&url=https%3a%2f%2fthmiao.github.io%2fposts%2ffirst_post%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fthmiao.github.io%2fposts%2ffirst_post%2f&t=%e5%88%a9%e7%94%a8hugo%e5%92%8cGitHub%20Pages%e6%90%ad%e5%bb%ba%e4%b8%80%e4%b8%aa%e6%98%93%e7%94%a8%e7%9a%84%e4%b8%aa%e4%ba%ba%e5%8d%9a%e5%ae%a2" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://thmiao.github.io/posts/first_post/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-              之前有断断续续在CSDN等平台上写过一些文章，整体上还是比较方便的但是利用平台的缺点包括但不限于
- 文章页面上可能带有广告，降低了页面整体的清洁度和观感 页面编辑的自由度低，没法DIY一些有意思的东西 迁移性差   但是如果只是为了搭一个简单的博客去租云服务器的话又感觉不划算，那不如试试利用GitHub Pages免费托管静态页面来搭建一个简单的博客。GitHub Pages的使用非常友好，只需要像平常一样创建一个repository，唯一的要求是这个仓库需要命名为username.github.io（username对应你的github用户名或者组织名）。然后就可以在仓库的Setting&ndash;Pages下管理你 …
-            
-          </p>
-          <a href="https://thmiao.github.io/posts/first_post/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-    <li>
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '8f0186dc642727819979',
+    clientSecret: 'c8ecc8e5e173dbf8b9788caedceed0678849f797',
+    repo: 'blog_comment',
+    owner: 'thmiao',
+    admin: ['thmiao'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
 
 
-    </li>
-  </ul>
+  </article>
 <aside class="sidebar">
   <section class="sidebar_inner">
     <h2 class="mt-4">Recent Posts</h2>
     <ul class="flex-column">
-      <li>
-        <a href="https://thmiao.github.io/posts/image_decode/" class="nav-link" title="关于go image.Decode与import _">关于go image.Decode与import _</a>
-      </li>
       <li>
         <a href="https://thmiao.github.io/posts/keepttl/" class="nav-link" title="关于go-redis与KeepTTL">关于go-redis与KeepTTL</a>
       </li>
@@ -442,9 +215,8 @@
   </section>
 </aside>
 
+  
 </div>
-
-
     </main><svg width="0" height="0" class="hidden">
   <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
     <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
